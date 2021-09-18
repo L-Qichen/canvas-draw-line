@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas(v.1)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <canvas id="canvas">
+  </canvas>
+  <script>
+    let canvas = document.getElementById('canvas');
+    canvas.width = document.documentElement.clientWidth;
+    canvas.height = document.documentElement.clientHeight;
+    let ctx = canvas.getContext('2d');
+    ctx.lineWidth = 7;
+    ctx.lineCap = 'square';
+    let stop = true;
+    let lastPoint;
+
+    //检测设备是否支持触摸,支持触摸说明是手机或平板
+    var isTouchDevice = 'ontouchstart' in document.documentElement;
+    console.log(isTouchDevice);
+
+    if (isTouchDevice) {
+      canvas.ontouchstart = (e) => {
+        lastPoint = [e.touches[0].clientX, e.touches[0].clientY]
+      }
+      canvas.ontouchmove = (e) => {
+        ctx.beginPath();
+        ctx.moveTo(lastPoint[0], lastPoint[1]);
+        ctx.lineTo(e.touches[0].clientX, e.touches[0].clientY);
+        lastPoint = [e.touches[0].clientX, e.touches[0].clientY];
+        ctx.closePath();
+        ctx.stroke();
+      }
+    } else {
+      canvas.onmousedown = (e) => {
+        stop = false;
+        lastPoint = [e.clientX, e.clientY];
+      }
+      canvas.onmousemove = (e) => {
+        if (stop === false) {
+          ctx.beginPath();
+          ctx.moveTo(lastPoint[0], lastPoint[1]);
+          ctx.lineTo(e.clientX, e.clientY);
+          lastPoint = [e.clientX, e.clientY];
+          ctx.closePath();
+          ctx.stroke();
+        }
+      }
+      canvas.onmouseup = () => {
+        stop = true;
+      }
+    }
+
+    // canvas.onclick = (e) => {
+    //   console.log(e.clientX)
+    //   console.log(e.clientY)
+    //   let div = document.createElement('div')
+    //   div.style.position = 'absolute'
+    //   div.style.left = e.clientX + 'px'
+    //   div.style.top = e.clientY + 'px'
+    //   div.style.marginLeft = '-3px'
+    //   div.style.marginTop = '-3px'
+    //   div.style.width = '6px'
+    //   div.style.height = '6px'
+    //   div.style.border = '1px solid blue'
+    //   div.style.borderRadius = '50%'
+    //   canvas.appendChild(div)
+    // }
+
+  </script>
+</body>
+
+</html>
